@@ -314,13 +314,20 @@ public class LzMessageSet : NotifyBase
                 msg = msgItem.Msg;
         return msg;
     }
+    /// <summary>
+    /// We store messages files in directories that encode the culter in the
+    /// directory name. For example, Assets/System-en-US. This method will
+    /// generate the correct path for the current culture.
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <param name="culture"></param>
+    /// <returns></returns>
     protected string FilePathWithCulture(string filePath, string culture) 
     {
-		// ex: "Assets/System/BlazoriseComponentMessage.json"
-		var fileName = Path.GetFileNameWithoutExtension(filePath); // BlazorseComponentMessage
-		var directoryPath = Path.GetDirectoryName(filePath); // Assets/System 
+		var fileName = Path.GetFileName(filePath);
+		var directoryPath = Path.GetDirectoryName(filePath);
 		var newDirectoryName = directoryPath + "-" + culture; 
-		return Path.Combine(newDirectoryName, fileName + "." + culture + ".json");
+		return Path.Combine(newDirectoryName, fileName);
     }
     protected bool TryGetMsg(string key, out string msg, LzMessageUnits? unitsArg = null)
     {
