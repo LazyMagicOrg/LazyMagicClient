@@ -182,6 +182,35 @@ public class LzMessages : NotifyBase, ILzMessages
             return $"<span style='color:red;'>{key}, {ex.Message}</span>";
         }
     }
+
+    /// <inheritdoc />
+    public string Img(string key, bool ignoreUseInspect = false, LzMessageUnits? unitsArg = null)
+    {
+        if (string.IsNullOrEmpty(key)) return "";
+        try
+        {
+            if (_staticAssets == null)
+                return "";
+            var msg = MessageSet.Msg(key, unitsArg);
+            if (msg.Equals(key))
+                msg = DefaultMessages?.Msg(key, unitsArg) ?? key;
+
+            bool activeMsgItemsModel = false;
+            bool isCurrentMsgItemModel = false;
+            if (MessageSet.MsgItemsModels.TryGetValue(key, out var msgItemsModel))
+            {
+                activeMsgItemsModel = msgItemsModel.Dirty;
+                isCurrentMsgItemModel = MessageSet.CurrentMsgItemsModel == msgItemsModel;
+            }
+
+            return AssetsUrl + msg;
+        }
+        catch (Exception ex)
+        {
+            return $"<span style='color:red;'>{key}, {ex.Message}</span>";
+        }
+    }
+
     /// <inheritdoc />
     public MsgItemsModel MsgItemsModel(string key)
         => MessageSet.MsgItemsModels[key];

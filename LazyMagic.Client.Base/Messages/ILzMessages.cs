@@ -88,6 +88,15 @@ public interface ILzMessages : INotifyPropertyChanged
     /// <param name="ignoreUseInspect"></param>
     /// <returns></returns>
     public string Msg(string key, bool ignoreUseInspect = false, LzMessageUnits? unitsArg = null);
+
+    /// <summary>
+    /// Returns the img url for the specified key. 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="ignoreUseInspect"></param>
+    /// <returns></returns>
+    public string Img(string key, bool ignoreUseInspect = false, LzMessageUnits? unitsArg = null);
+
     /// <summary>
     /// Returns a MsgItemsModel instance for the specified key where each 
     /// MsgItem is associated with one of the message files in the current message set. 

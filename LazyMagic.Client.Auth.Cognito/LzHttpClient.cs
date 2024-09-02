@@ -40,7 +40,7 @@ public class LzHttpClient : NotifyBase, ILzHttpClient
         CancellationToken cancellationToken,
         [CallerMemberName] string? callerMemberName = null!)
     {
-        var baseUrl = lzHost.Url;
+        var baseUrl = lzHost.RemoteApiUrl;
         if(!baseUrl.EndsWith("/"))
             baseUrl += "/"; // baseUrl must end with a / or contcat with relative path may fail
 

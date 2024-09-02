@@ -77,12 +77,11 @@ public abstract class LzItemViewModel<TDTO, TModel> : LzViewModel, ILzItemViewMo
     public ILzParentViewModel? ParentViewModel { get; set; }
 
     // protected Properties
-    protected TDTO? _DTO { get; init; } // used as a reference to a DTO object when using StorageAPI.Memory
+    protected TDTO? _DTO { get; init; } 
     protected ILzSessionViewModel LzBaseSessionViewModel { get; init; }
     protected string _EntityName { get; init; } = string.Empty;
     protected string _DataCopyJson = string.Empty;
     // Storage 
-    // DTO access - requires authentication
     protected Func<TDTO, Task<TDTO>>? _DTOCreateAsync { get; init; } // Assumes storage Id is in TDTO
     protected Func<string, TDTO, Task<TDTO>>? _DTOCreateIdAsync { get; init; } // Assumes storage Id is passed separate from TDTO
     protected Func<string, Task<TDTO>>? _DTOReadIdAsync { get; init; }

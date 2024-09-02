@@ -65,8 +65,7 @@ public abstract class LzItemsViewModel<TVM, TDTO, TModel> : LzViewModel, INotify
     protected ILzSessionViewModel _LzBaseSessionViewModel { get; init; }
 
     // Storage Access
-    protected StorageAPI _StorageAPI { get; init; }
-    protected Func<string, Task<ICollection<TDTO>>>? _DTOReadListId { get; init; }
+    protected Func<string, Task<ICollection<TDTO>>>? _DTOReadListIdAsync { get; init; }
     protected Func<Task<ICollection<TDTO>>>? _DTOReadListAsync { get; init; }
     protected string _EntityName { get; set; } = string.Empty;
 
@@ -87,11 +86,11 @@ public abstract class LzItemsViewModel<TVM, TDTO, TModel> : LzViewModel, INotify
             CheckAuth();  
             if(string.IsNullOrEmpty(id) && _DTOReadListAsync == null)
                 throw new Exception("SvcReadList function not assigned");   
-            if(!string.IsNullOrEmpty(id) && _DTOReadListId == null)
+            if(!string.IsNullOrEmpty(id) && _DTOReadListIdAsync == null)
                 throw new Exception("SvcReadListId function not assigned");
             IsLoading = true;
             var items = (!string.IsNullOrEmpty(id))
-                ? await _DTOReadListId!(id)
+                ? await _DTOReadListIdAsync!(id)
                 : await _DTOReadListAsync!(); 
             return await UpdateDataAsync(items, forceload);
         }
