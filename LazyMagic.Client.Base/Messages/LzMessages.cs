@@ -13,19 +13,21 @@ public enum LzMessageUnits { Imperial, Metric }
 ///    key: { "msg": "message text" }
 /// }
 /// 
-/// External message resources are culture specific with a sufix determining the 
-/// culture of the messages. ex: "_content/{assembly}/LzMessages.en-US.json".s
+/// External message resources are culture specific and stored under a path that 
+/// includes the culture:
+/// ex: "Assets/{culture}/myapp/messages.json".s
 /// Message resources are loaded using IOSAccess.ContentReadAsync so 
 /// you need to call SetStaticAssets before loading external message resources. 
 /// 
 /// To load external message resources:
 /// 1. Set the MessageDocs property to the list of message files. ex:
-///     MessageDocs = new List<string> { 
-///     "_content/MyApp/data/messages.json", 
-///     "_content/MyApp/data/inventory.json,
-///     "_content/Tenancy/MyApp/messages.json", // tenant messages override data messages
-///     "_content/Tenancy/MyApp/inventory.json // tenant inventory override data inventory
-///     };
+/// List<string> messages = [
+///    "Assets/{culture}/System/AuthMessages.json",
+///    "Assets/{culture}/System/BaseMessages.json",
+///    "Assets/{culture}/MyApp/Messages.json",
+///    "Assets/{culture}/MyImgs/Images.json",
+///    "Tenancy/{culture}/MyApp/Messages.json",
+///    ];
 /// 2. Call SetStaticAssets() with an IOSAccess object. 
 /// 3. Call SetMessageSetAsync("en-US, LzMessageUnits.Imperial") with the culture 
 ///    and units to load the specific language files and make the "message set" current.

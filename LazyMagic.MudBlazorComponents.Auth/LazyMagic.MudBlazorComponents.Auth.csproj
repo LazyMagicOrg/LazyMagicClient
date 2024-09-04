@@ -18,9 +18,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="wwwroot\Messages.en-US.json">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Content>
+	  <Folder Include="wwwroot\" />
 	</ItemGroup>
-
 </Project>

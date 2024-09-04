@@ -14,8 +14,8 @@ public interface ILzMessages : INotifyPropertyChanged
     public List<(string culture, string name)> Cultures { get; set; }
     /// <summary>
     /// The List of message files to be loaded. These file names do not include 
-    /// the culture. The culture is added to the file name before loading.
-    /// ex: "_content/MyApp/data/messages.json" -> "_content/MyApp/data/messages.en-US.json"
+    /// the culture. The culture is added to the folder path name before loading.
+    /// ex: "Assets/{culture}/MyApp/messages.json" 
     /// </summary>
     public List<string> MessageFiles { get; set; }
     /// <summary>

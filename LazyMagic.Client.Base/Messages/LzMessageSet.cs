@@ -118,55 +118,6 @@ public class LzMessageSet : NotifyBase
         CurrentMsgItemsModel = msgItemsModel;
         return msgItemsModel;
     }
-    //public List<MsgItemModel> MsgItemModels(string key)
-    //{
-    //    var items = new List<MsgItemModel>();
-    //    if (string.IsNullOrEmpty(key))
-    //        return items;
-    //    var lastMsg = ""; // Used to provide default on new MstgItem creation
-    //    foreach (var messageDoc in MessageDocs)
-    //    {
-    //        if (CurrentMsgItemModels.TryGetValue((messageDoc.Key, key), out MsgItemModel? existingMsgItemModel))
-    //        {
-    //            if (existingMsgItemModel.MsgItemState != MsgItemState.Clean)
-    //            {
-    //                items.Add(existingMsgItemModel);
-    //                continue;
-    //            }
-    //        }
-    //        MsgItem? msgItem;
-    //        _ = messageDoc.Value.Messages.TryGetValue(key, out msgItem);
-    //        var isEditable = (msgItem != null && (msgItem.Editable ?? false)) || messageDoc.Value.DocMetaData.Editable;
-    //        var isEmpty = msgItem == null || string.IsNullOrEmpty(msgItem.Msg);
-
-    //        if (!isEditable && isEmpty)
-    //            continue;
-
-    //        var msgItemModel = new MsgItemModel()
-    //        {
-    //            MsgItemsModel = this,
-    //            Key = key,
-    //            File = messageDoc.Key
-    //        };
-    //        if(msgItem is not null)
-    //        {
-    //            if (msgItemModel.MsgItemState == MsgItemState.Clean)
-    //            {
-    //                msgItemModel.Msg = msgItem.Msg;
-    //                msgItemModel.Editable = msgItem.Editable ?? messageDoc.Value.DocMetaData.Editable;
-    //            }
-    //        } else
-    //        {
-    //            msgItemModel.Msg = lastMsg;
-    //            msgItemModel.Editable = messageDoc.Value.DocMetaData.Editable;
-    //        }
-    //        lastMsg = msgItemModel.Msg;
-
-    //        items.Add(msgItemModel);
-    //        CurrentMsgItemModels[(messageDoc.Key, key)] = msgItemModel;
-    //    }
-    //    return items;
-    //}
 
     public async Task LoadMessagesAsync(List<string> messageFiles, IStaticAssets osAccess, bool keepDocs = false)
     {
@@ -180,7 +131,7 @@ public class LzMessageSet : NotifyBase
             var filePath = "";
             try
             {
-                filePath = FilePathWithCulture(msgFile, Culture); // ex: "messages.en-US.json"
+                filePath = FilePathWithCulture(msgFile, Culture); // ex: "Assets/en-US/MyApp/messages.json"
 
                 var json = await _staticAssets.ReadContentAsync(filePath);
                 if (!string.IsNullOrEmpty(json))
@@ -315,20 +266,20 @@ public class LzMessageSet : NotifyBase
         return msg;
     }
     /// <summary>
-    /// We store messages files in directories that encode the culter in the
-    /// directory name. For example, Assets/System-en-US. This method will
-    /// generate the correct path for the current culture.
+    /// We store messages files in directories with this form.
+    /// {tenancy}/{culture}/...
+    /// This call assumes the {tenancy} is already set in the filePath argument 
+    /// and that the {culture} needs to be replaced in the filePath if one 
+    /// Example:
+    /// filePath "Assets/{culture}/System/AuthMessages.json"
+    /// culture "en-US"
+    /// return "Assets/en-US/System/AuthMessages.json"
+    /// is provided.
     /// </summary>
     /// <param name="filePath"></param>
     /// <param name="culture"></param>
     /// <returns></returns>
-    protected string FilePathWithCulture(string filePath, string culture) 
-    {
-		var fileName = Path.GetFileName(filePath);
-		var directoryPath = Path.GetDirectoryName(filePath);
-		var newDirectoryName = directoryPath + "-" + culture; 
-		return Path.Combine(newDirectoryName, fileName);
-    }
+    protected string FilePathWithCulture(string filePath, string culture)  => filePath.Replace("{culture}", culture);
     protected bool TryGetMsg(string key, out string msg, LzMessageUnits? unitsArg = null)
     {
         var units = unitsArg ?? Units;
