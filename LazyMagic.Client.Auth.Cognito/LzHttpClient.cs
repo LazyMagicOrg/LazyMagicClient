@@ -5,7 +5,15 @@ namespace LazyMagic.Client.Auth;
 /// <summary>
 /// This ILzHttpClient implementation supports calling Local, CloudFront or ApiGateway endpoints.
 /// It is not an HttClient, instead it services SendAsync() calls made from the *ClientSDK and 
-/// dispatches these calls to an HTTPClient configured for the API.
+/// dispatches these calls to an HTTPClient configured for the API. 
+/// 
+/// You do not have to use this class. You can use your own HttpClient implementation and just 
+/// cast it to this ILzHttpClient interface. For instance, you could move all the configuration 
+/// to the top level of your app. You can use delegates for adding the headers etc.
+/// 
+/// TODO: Use IHttpClientFactory to handle DNS changes. We may want to add in delegates for 
+/// handling retries and other HttpClientFactory features.
+/// 
 /// </summary>
 public class LzHttpClient : NotifyBase, ILzHttpClient
 {
@@ -27,12 +35,6 @@ public class LzHttpClient : NotifyBase, ILzHttpClient
     protected HttpClient? httpClient;
     protected bool isServiceAvailable = false;
     protected string? tenantKey;
-    public bool IsServiceAvailable
-    {
-        get { return isServiceAvailable; }  
-        set { SetProperty(ref isServiceAvailable, value); }
-    }
-    protected int[] serviceUnavailableCodes = new int[] { 400 };
 
     public async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage requestMessage,
@@ -40,7 +42,7 @@ public class LzHttpClient : NotifyBase, ILzHttpClient
         CancellationToken cancellationToken,
         [CallerMemberName] string? callerMemberName = null!)
     {
-        var baseUrl = lzHost.RemoteApiUrl;
+        var baseUrl = lzHost.UseLocalhostApi ? lzHost.LocalApiUrl : lzHost.RemoteApiUrl;
         if(!baseUrl.EndsWith("/"))
             baseUrl += "/"; // baseUrl must end with a / or contcat with relative path may fail
 
@@ -67,7 +69,6 @@ public class LzHttpClient : NotifyBase, ILzHttpClient
                             requestMessage,
                             httpCompletionOption,
                             cancellationToken);
-                        IsServiceAvailable = true;
                         return response;
                     }
                     catch (HttpRequestException e) 
@@ -111,8 +112,6 @@ public class LzHttpClient : NotifyBase, ILzHttpClient
                             requestMessage,
                             httpCompletionOption,
                             cancellationToken);
-                        //Console.WriteLine(callerMemberName);
-                        IsServiceAvailable = true;  
                         return response;
                     }
                     catch (HttpRequestException e)

@@ -70,7 +70,7 @@ public class LzMessages : NotifyBase, ILzMessages
             RaisePropertyChanged(nameof(LzMessageSet));
         }
     }
-    private LzMessageSet? DefaultMessages;
+    private LzMessageSet? DefaultMessageSet;
     /// <inheritdoc />
     public string AssetsUrl { get; set; } = "";
     /// <inheritdoc />
@@ -121,21 +121,13 @@ public class LzMessages : NotifyBase, ILzMessages
     {
         if (_staticAssets == null)
             throw new InvalidOperationException("SetOSAccess must be called before SetMessageSetAsync");
-
-        //if (DefaultMessages == null)
-        //{
-        //    DefaultMessages = new LzMessageSet(this, culture, units);
-        //    _MessageSets.Add(culture, DefaultMessages);
-        //    MessageSet = DefaultMessages;
-        //}
-        //else 
-        
+       
         if (_MessageSets.TryGetValue(culture, out var existingSet))
         {
             MessageSet = existingSet;
             MessageSet.Units = units;
 
-            if (ReferenceEquals(DefaultMessages, existingSet))
+            if (ReferenceEquals(DefaultMessageSet, existingSet))
                 return;
         }
         else
@@ -144,7 +136,7 @@ public class LzMessages : NotifyBase, ILzMessages
             _MessageSets.Add(culture, MessageSet);
         }
 
-        DefaultMessages ??= MessageSet;
+        DefaultMessageSet ??= MessageSet;
         MessageSet.AssetsUrl = AssetsUrl;
         await MessageSet.LoadMessagesAsync(MessageFiles, _staticAssets);
 	}
@@ -159,10 +151,9 @@ public class LzMessages : NotifyBase, ILzMessages
                 return "";
             var msg = MessageSet.Msg(key, unitsArg);
             if (msg.Equals(key))
-                msg = DefaultMessages?.Msg(key, unitsArg) ?? key;
+                msg = DefaultMessageSet?.Msg(key, unitsArg) ?? key;
 
-            // Will have to change later!
-            if (Uri.TryCreate(msg, UriKind.Absolute, out _))
+            if (!UseInspect || ignoreUseInspect)
                 return msg;
 
             bool activeMsgItemsModel = false;
@@ -175,9 +166,7 @@ public class LzMessages : NotifyBase, ILzMessages
             var activeMsgIsDirtyClass = activeMsgItemsModel ? "static-content-is-dirty" : "";
             var isCurrentMessageClass = isCurrentMsgItemModel ? "static-content-is-current" : "";
 
-            if (UseInspect && !ignoreUseInspect)
-                msg = $"<span class=\"static-content-message {activeMsgIsDirtyClass} {isCurrentMessageClass}\" key=\"{key}\">{msg}</span>";
-            return msg;
+            return $"<span class=\"static-content-message {activeMsgIsDirtyClass} {isCurrentMessageClass}\" key=\"{key}\">{msg}</span>";
         }
         catch (Exception ex)
         {
@@ -195,15 +184,7 @@ public class LzMessages : NotifyBase, ILzMessages
                 return "";
             var msg = MessageSet.Msg(key, unitsArg);
             if (msg.Equals(key))
-                msg = DefaultMessages?.Msg(key, unitsArg) ?? key;
-
-            bool activeMsgItemsModel = false;
-            bool isCurrentMsgItemModel = false;
-            if (MessageSet.MsgItemsModels.TryGetValue(key, out var msgItemsModel))
-            {
-                activeMsgItemsModel = msgItemsModel.Dirty;
-                isCurrentMsgItemModel = MessageSet.CurrentMsgItemsModel == msgItemsModel;
-            }
+                msg = DefaultMessageSet?.Msg(key, unitsArg) ?? key;
 
             return AssetsUrl + msg;
         }
