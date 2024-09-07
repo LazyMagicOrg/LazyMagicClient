@@ -138,7 +138,7 @@ public class LzMessages : NotifyBase, ILzMessages
 
         DefaultMessageSet ??= MessageSet;
         MessageSet.AssetsUrl = AssetsUrl;
-        await MessageSet.LoadMessagesAsync(MessageFiles, _staticAssets);
+        await MessageSet.LoadMessagesAsync(_staticAssets);
 	}
 
     /// <inheritdoc />

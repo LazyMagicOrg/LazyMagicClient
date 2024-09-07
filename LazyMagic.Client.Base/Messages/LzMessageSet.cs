@@ -1,11 +1,4 @@
-﻿using ReactiveUI;
-using System;
-using System.Data;
-using System.Reactive;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace LazyMagic.Client.Base;
+﻿namespace LazyMagic.Client.Base;
 
 /// <summary>
 /// Loads the messages for a specific culture. Provides them in 
@@ -26,10 +19,12 @@ public class LzMessageSet : NotifyBase
         Culture = culture;
         Units = defaultUnits;
 
+        _messageFiles = messages.MessageFiles.Select(f => f.Replace("{culture}", culture)).ToList();
+
     }
 
     #region Public Properties
-    public ILzMessages Messages { get; private set; }    
+    public ILzMessages Messages { get; private set; }
     public string Culture {  get; private set; }
     private LzMessageUnits _units;
     public LzMessageUnits Units 
@@ -119,19 +114,15 @@ public class LzMessageSet : NotifyBase
         return msgItemsModel;
     }
 
-    public async Task LoadMessagesAsync(List<string> messageFiles, IStaticAssets osAccess, bool keepDocs = false)
+    public async Task LoadMessagesAsync(IStaticAssets osAccess, bool keepDocs = false)
     {
         _keepDocs = keepDocs;
         _staticAssets = osAccess;
-        _messageFiles = messageFiles;
 
-        foreach (var msgFile in messageFiles)
+        foreach (var filePath in _messageFiles)
         {
-            // msgFile example: "messages.json"
-            var filePath = "";
             try
             {
-                filePath = FilePathWithCulture(msgFile, Culture); // ex: "Assets/en-US/MyApp/messages.json"
 
                 var json = await _staticAssets.ReadContentAsync(filePath);
                 if (!string.IsNullOrEmpty(json))
@@ -162,9 +153,8 @@ public class LzMessageSet : NotifyBase
             {
                 if (_staticAssets == null)
                     throw new Exception("SetOSAccess must be called before SetMessageSetAsync.");
-                foreach (var msgFile in _messageFiles) // preserve the precidence order of the files
+                foreach (var filePath in _messageFiles) // preserve the precidence order of the files
                 {
-                    var filePath = FilePathWithCulture(msgFile, Culture);
                     UpdateMsgsFromMessageDocs(msgs, key, filePath); // first set from docs
                     UpdateMsgsFromMsgItemsModels(msgs, key, filePath); // then override if in MsgItems
 
@@ -265,21 +255,6 @@ public class LzMessageSet : NotifyBase
                 msg = msgItem.Msg;
         return msg;
     }
-    /// <summary>
-    /// We store messages files in directories with this form.
-    /// {tenancy}/{culture}/...
-    /// This call assumes the {tenancy} is already set in the filePath argument 
-    /// and that the {culture} needs to be replaced in the filePath if one 
-    /// Example:
-    /// filePath "Assets/{culture}/System/AuthMessages.json"
-    /// culture "en-US"
-    /// return "Assets/en-US/System/AuthMessages.json"
-    /// is provided.
-    /// </summary>
-    /// <param name="filePath"></param>
-    /// <param name="culture"></param>
-    /// <returns></returns>
-    protected string FilePathWithCulture(string filePath, string culture)  => filePath.Replace("{culture}", culture);
     protected bool TryGetMsg(string key, out string msg, LzMessageUnits? unitsArg = null)
     {
         var units = unitsArg ?? Units;
