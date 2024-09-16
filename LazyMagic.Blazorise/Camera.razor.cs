@@ -2,13 +2,13 @@
 
 public partial class Camera : BaseComponent, IAsyncDisposable
 {
-
+	[Inject] BlazoriseOptions? BlazoriseOptions { get; set; }
 	#region Methods
 
 	/// <inheritdoc/>
 	protected override Task OnInitializedAsync()
 	{
-		JSModule ??= new JSCameraModule(JSRuntime!, VersionProvider!);
+		JSModule ??= new JSCameraModule(JSRuntime!, VersionProvider!, BlazoriseOptions!);
 		return base.OnInitializedAsync();
     }
 	/// <inheritdoc />

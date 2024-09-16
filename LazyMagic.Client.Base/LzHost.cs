@@ -14,6 +14,10 @@ public interface ILzHost
     bool IsAndroid { get; set; }    
     bool IsLocal { get; set;  }   
     bool UseLocalhostApi { get; set; }
+
+    string GetApiUrl(string path);
+    string GetAssetsUrl(string path);    
+    
 }
 
 public class LzHost : ILzHost
@@ -80,4 +84,6 @@ public class LzHost : ILzHost
     public bool IsLocal { get; set; }   
     public bool UseLocalhostApi { get; set; }
 
+    public string GetApiUrl(string path) => UseLocalhostApi ? LocalApiUrl + path : RemoteApiUrl + path;
+    public string GetAssetsUrl(string path) => AssetsUrl + path;
 }

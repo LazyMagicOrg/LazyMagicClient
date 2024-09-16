@@ -13,7 +13,7 @@ public class JSCameraModule : BaseJSModule
     /// </summary>
     /// <param name="jsRuntime">JavaScript runtime instance.</param>
     /// <param name="versionProvider">Version provider.</param>
-    public JSCameraModule(IJSRuntime jsRuntime, IVersionProvider versionProvider) : base(jsRuntime, versionProvider)
+    public JSCameraModule(IJSRuntime jsRuntime, IVersionProvider versionProvider, BlazoriseOptions blazoriseOptions ) : base(jsRuntime, versionProvider, blazoriseOptions)
 	{
 		moduleInstance = DotNetObjectReference.Create(this);
     }

@@ -5,7 +5,10 @@ export function showPrompt(message) {
   return prompt(message, 'Type anything here');
 }
 export function focusElement(id) {
-    document.getElementById(id).focus();
+    if(!id) return;
+    const element = document.getElementById(id)
+    if (element)
+        element.focus();
 }
 export function activeElement() {
     var activeElement = document.activeElement;

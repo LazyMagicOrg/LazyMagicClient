@@ -2,10 +2,10 @@
 	<Import Project="$(SolutionDir)CommonPackageHandling.targets" />
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<LangVersion>12.0</LangVersion>
 
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<Description>Gnerate LazyMagic ViewModel Helper Classes</Description>
-		<LangVersion>10.0</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<IncludeBuildOutput>true</IncludeBuildOutput>

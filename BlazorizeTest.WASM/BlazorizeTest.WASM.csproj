@@ -21,6 +21,7 @@
 		<PackageReference Include="Blazorise.Components" />
 		<PackageReference Include="Blazorise.Icons.FontAwesome" />
 		<PackageReference Include="Blazorise.LoadingIndicator" />
+		<!--<PackageReference Include="LazyMagic.Client.FactoryGenerator" PrivateAssets="all"/>-->
 	</ItemGroup>
 
 	<ItemGroup>
