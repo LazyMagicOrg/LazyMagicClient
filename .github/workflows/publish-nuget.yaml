@@ -16,23 +16,34 @@ jobs:
       with:
         dotnet-version: '8.x' # Update to your .NET version
 
-    - name: Create NuGet.Config
+    - name: Configure NuGet
       run: |
-        dotnet nuget add source --username not-required --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name InSciCo "https://nuget.pkg.github.com/InSciCo/index.json"
         cat > NuGet.Config << EOF
         <?xml version="1.0" encoding="utf-8"?>
         <configuration>
+          <packageSources>
+            <clear />
+            <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+            <add key="github" value="https://nuget.pkg.github.com/LazyMagicOrg/index.json" />
+          </packageSources>
+          <packageSourceCredentials>
+            <github>
+              <add key="Username" value="USERNAME" />
+              <add key="ClearTextPassword" value="${{ secrets.GITHUB_TOKEN }}" />
+            </github>
+          </packageSourceCredentials>
           <packageSourceMapping>
             <packageSource key="nuget.org">
               <package pattern="*" />
             </packageSource>
-            <packageSource key="InSciCo">
-              <package pattern="*" />
-              <!-- Add other patterns as needed -->
+            <packageSource key="github">
+              <package pattern="LazyMagic.*" />
             </packageSource>
           </packageSourceMapping>
         </configuration>
         EOF
+
+        cat NuGet.Config
 
     - name: Restore dependencies
       run: |
@@ -43,5 +54,5 @@ jobs:
 
     - name: Publish
       run: |
-        dotnet nuget push ./Packages/*.nupkg --source https://nuget.pkg.github.com/InSciCo/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-        dotnet nuget push ./Packages/*.snupkg --source https://nuget.pkg.github.com/InSciCo/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        dotnet nuget push ./Packages/*.nupkg --source https://nuget.pkg.github.com/LazyMagicOrg/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        dotnet nuget push ./Packages/*.snupkg --source https://nuget.pkg.github.com/LazyMagicOrg/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
