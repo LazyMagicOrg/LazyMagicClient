@@ -1,4 +1,4 @@
-//TODO: Move tests from old LazyMagic solution to this project
+//TODO: Move tests from old LazyStack solution to this project
 
 namespace LazyMagic.Client.AuthTest
 {
