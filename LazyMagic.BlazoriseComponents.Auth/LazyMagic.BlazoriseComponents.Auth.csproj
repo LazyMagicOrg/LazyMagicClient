@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\LazyMagic.Blazorise\LazyMagic.BlazoriseComponents.csproj" />
+	  <ProjectReference Include="..\LazyMagic.BlazoriseComponents\LazyMagic.BlazoriseComponents.csproj" />
 	  <ProjectReference Include="..\LazyMagic.Client.ViewModels.Auth\LazyMagic.Client.ViewModels.Auth.csproj" />
 	</ItemGroup>
 
